@@ -2,42 +2,63 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <meta name="apple-mobile-web-app-capable" content="no" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
     <!-- import CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入样式文件 -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/vant@2.12/lib/index.css"
+    />
 </head>
 <body>
 <div id="app">
-    <div style="width: 60%;margin: 10%">
-        <el-button type="primary" @click="wang">汪</el-button>
-        <el-button type="primary" @click="ou">欧</el-button>
-        <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="token">
-                <el-input v-model="form.token"></el-input>
-            </el-form-item>
-            <el-form-item label="uid">
-                <el-input v-model="form.uid"></el-input>
-            </el-form-item>
-            <el-form-item label="经度">
-                <el-input v-model="form.longi"></el-input>
-            </el-form-item>
-            <el-form-item label="维度">
-                <el-input v-model="form.lati"></el-input>
-            </el-form-item>
-            <el-form-item label="地址">
-                <el-input v-model="form.address"></el-input>
-            </el-form-item>
-            <el-button type="primary" @click="query">查询</el-button>
-            <el-button type="primary" @click="daka">打卡</el-button>
-            </el-form-item>
-        </el-form>
-    </div>
 
+    <div style="margin: 10%">
+        <h4>智能打卡系统</h4>
+    <van-button type="primary" @click="wang">汪</van-button>
+    <van-button type="primary" @click="ou">欧</van-button>
+    <van-button type="primary" @click="jc">监察</van-button>
+    <van-button type="primary" @click="xf">信访</van-button>
+    <van-field
+            v-model="form.token"
+            name="token"
+            label="token"
+            placeholder="token"
+            :rules="[{ required: true, message: '请填token' }]"></van-field>
+    <van-field
+            v-model="form.uid"
+            name="uid"
+            label="uid"
+            placeholder="uid"
+            :rules="[{ required: true, message: '请填写账号id' }]"></van-field>
+    <van-field
+            v-model="form.longi"
+            name="经度"
+            label="经度"
+            placeholder="经度"></van-field>
+    <van-field
+            v-model="form.lati"
+            name="维度"
+            label="维度"
+            placeholder="维度"></van-field>
+    <van-field
+            v-model="form.address"
+            name="地址"
+            label="地址"
+            placeholder="地址"></van-field>
+    <van-button type="primary" @click="query">查询</van-button>
+    <van-button type="primary" @click="daka">打卡</van-button>
+    </div>
 </div>
 </body>
-<!-- import Vue before Element -->
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
-<!-- import JavaScript -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+
+
+<!-- 引入 Vue 和 Vant 的 JS 文件 -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript" src="https://cdn.bootcss.com/qs/6.7.0/qs.min.js"></script>
 <script>
@@ -63,48 +84,50 @@
                     let code = data.data.qdzt
                     if(code){
                       if(code === '1'){
-                          that.$message({
-                              showClose: true,
-                              message: '未签到',
-                              type: 'success'
-                          });
+                          that.$toast.success('未签到');
                       }else if(code === '6' ){
-                          that.$message({
-                              showClose: true,
-                              message: '上班中，未签退',
-                              type: 'success'
-                          });
+                          that.$toast.success( '上班中，未签退');
                       }
                       else if(code === '5' ){
-                          that.$message({
-                              showClose: true,
-                              message: '已签退',
-                              type: 'success'
-                          });
+                          that.$toast.success('已签退');
                       }else {
-                          that.$message({
-                              showClose: true,
-                              message: '未知状态',
-                              type: 'success'
-                          });
+                          that.$toast.fail('未知状态');
                       }
                     }else {
                        alert(JSON.stringify(data) )
                     }
+                }).catch(e=>{
+
+                    if(e.response.data){
+                        alert(e.response.data)
+                    }else {
+                        alert(e)
+                    }
+
                 })
             },
             daka() {
                 let that = this
+                let  date = new Date();
+                let  hours = date.getHours()*100;
+                let  minus =date.getMinutes()
+                let time = hours + minus
+                if(time > 900 && time <1735){
+                    that.$toast.fail('上班时间,不能打卡');
+                    return
+                }
                 axios.post('/v1/daka',this.form).then(function (response) {
                     let data = JSON.parse(response.data)
                     if(data.msg ==='成功'){
-                        that.$message({
-                            showClose: true,
-                            message: data.data,
-                            type: 'success'
-                        });
+                        that.$toast.success(data.data);
                     }else {
                         alert(JSON.stringify(data) )
+                    }
+                }).catch(e=>{
+                    if(e.response.data){
+                        alert(e.response.data)
+                    }else {
+                        alert(e)
                     }
                 })
             },
@@ -113,6 +136,16 @@
             },
             wang(){
                 this.form.uid = 'o1df8wbs0jO5O0EVk8IRD47IDZLg'
+            },
+            jc(){
+                this.form.longi = '120.189317'
+                this.form.lati = '30.262242'
+                this.form.address = '杭州市劳动保障信息中心'
+            },
+            xf(){
+                this.form.longi = '120.148615'
+                this.form.lati = '30.264156'
+                this.form.address = '浙江省杭州市西湖区宝石一路2号'
             }
         }
     })
