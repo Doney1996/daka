@@ -14,7 +14,8 @@ import (
 */
 
 func IndexHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", nil)
+	c.Redirect(200, "/index.html")
+	//c.HTML(http.StatusOK, "index.html", nil)
 }
 
 func Daka(c *gin.Context) {
@@ -25,23 +26,23 @@ func Daka(c *gin.Context) {
 	longi := jsonContent["longi"]
 	lati := jsonContent["lati"]
 	address := jsonContent["address"]
-	if len(token) ==0 {
+	if len(token) == 0 {
 		c.JSON(http.StatusBadRequest, "token不能为空")
 		return
 	}
-	if len(uid) ==0 {
+	if len(uid) == 0 {
 		c.JSON(http.StatusBadRequest, "uid不能为空")
 		return
 	}
-	if len(longi) ==0 {
+	if len(longi) == 0 {
 		c.JSON(http.StatusBadRequest, "longi经度不能为空")
 		return
 	}
-	if len(lati) ==0 {
+	if len(lati) == 0 {
 		c.JSON(http.StatusBadRequest, "lati维度不能为空")
 		return
 	}
-	if len(address) ==0 {
+	if len(address) == 0 {
 		c.JSON(http.StatusBadRequest, "address地址不能为空")
 		return
 	}
@@ -61,7 +62,7 @@ func Daka(c *gin.Context) {
         "charset":"utf-8",
         "appid":"ehradmin"
     }
-    }`, token, uid,longi,lati,address))
+    }`, token, uid, longi, lati, address))
 	var jsonStr = []byte(postJson)
 	buf := bytes.NewBuffer(jsonStr)
 	get, _ := http.Post("https://epp.epsoft.com.cn/ehr/signServlet", "application/json;charset=UTF-8", buf)
@@ -77,11 +78,11 @@ func Chaxun(c *gin.Context) {
 	c.BindJSON(&jsonContent)
 	token := jsonContent["token"]
 	uid := jsonContent["uid"]
-	if len(token) ==0 {
+	if len(token) == 0 {
 		c.JSON(http.StatusBadRequest, "token不能为空")
 		return
 	}
-	if len(uid) ==0 {
+	if len(uid) == 0 {
 		c.JSON(http.StatusBadRequest, "uid不能为空")
 		return
 	}
@@ -107,4 +108,3 @@ func Chaxun(c *gin.Context) {
 	c.JSON(http.StatusOK, string(body))
 
 }
-

@@ -19,6 +19,7 @@
         <h4>智能打卡系统</h4>
     <van-button type="primary" @click="wang">汪</van-button>
     <van-button type="primary" @click="ou">欧</van-button>
+    <van-button type="primary" @click="yuan">袁</van-button>
     <van-button type="primary" @click="jc">监察</van-button>
     <van-button type="primary" @click="xf">信访</van-button>
     <van-field
@@ -50,6 +51,9 @@
             placeholder="地址"></van-field>
     <van-button type="primary" @click="query">查询</van-button>
     <van-button type="primary" @click="daka">打卡</van-button>
+        <div style="margin-top: 2%">
+            <a  target="_blank"  href="https://www.notion.so/doney/7b378a85e0e24e55b316eb03f34e183d">接口文档</a>
+        </div>
     </div>
 </div>
 </body>
@@ -77,24 +81,23 @@
         },
         methods: {
             query() {
-                console.log(this.form);
                 let that = this
                 axios.post('/v1/query',this.form).then(function (response) {
                     let data = JSON.parse(response.data)
-                    let code = data.data.qdzt
-                    if(code){
-                      if(code === '1'){
-                          that.$toast.success('未签到');
-                      }else if(code === '6' ){
-                          that.$toast.success( '上班中，未签退');
-                      }
-                      else if(code === '5' ){
-                          that.$toast.success('已签退');
-                      }else {
-                          that.$toast.fail('未知状态');
-                      }
+                    if(data && data.data && data.data.qdzt){
+                        let code = data.data.qdzt
+                        if(code === '1'){
+                            that.$toast.success('未签到');
+                        }else if(code === '6' ){
+                            that.$toast.success( '上班中，未签退');
+                        }
+                        else if(code === '5' ){
+                            that.$toast.success('已签退');
+                        }else {
+                            that.$toast.fail('未知状态');
+                        }
                     }else {
-                       alert(JSON.stringify(data) )
+                        alert(JSON.stringify(data) )
                     }
                 }).catch(e=>{
 
@@ -137,10 +140,13 @@
             wang(){
                 this.form.uid = 'o1df8wbs0jO5O0EVk8IRD47IDZLg'
             },
+            yuan(){
+                this.form.uid = 'o1df8wRBiO6ZsBRtvNMTPOn-xnDc'
+	    },
             jc(){
-                this.form.longi = '120.189317'
-                this.form.lati = '30.262242'
-                this.form.address = '杭州市劳动保障信息中心'
+                this.form.longi = '120.18468'
+                this.form.lati = '30.25774'
+                this.form.address = '浙江省杭州市上城区庆春路17号'
             },
             xf(){
                 this.form.longi = '120.148615'

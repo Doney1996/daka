@@ -14,8 +14,8 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(Recover)
 	// 告诉gin框架去哪里找模板文件
-	r.LoadHTMLGlob("templates/*")
-	r.GET("/", controller.IndexHandler)
+	//r.LoadHTMLGlob("templates/*
+	r.Static("/", "./static")
 
 	// v1
 	v1Group := r.Group("v1")
