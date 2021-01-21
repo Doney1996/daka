@@ -68,6 +68,12 @@
             <a  target="_blank"  href="https://www.notion.so/doney/7b378a85e0e24e55b316eb03f34e183d">接口文档</a>
         </div>
     </div>
+    <van-popup style="width: 200px" v-model="show" :close-on-click-overlay="false">
+
+        <van-cell-group>
+          <van-field  label-width="50" v-model="password" type="password" label="密码:" placeholder="请输入密码" ></van-field>
+        </van-cell-group>
+    </van-popup>
 </div>
 </body>
 
@@ -131,6 +137,15 @@
                 },
                 loadQueryBtn:false,
                 dakaBtn:false,
+                show:true,
+                password:'',
+            }
+        },
+        watch:{
+            password: function (val) {
+                if(val ==='666'){
+                    this.show = false
+                }
             }
         },
         methods: {
