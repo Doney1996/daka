@@ -15,9 +15,12 @@ func SetupRouter() *gin.Engine {
 	r.Use(Recover)
 	// 告诉gin框架去哪里找模板文件
 	//r.LoadHTMLGlob("templates/*
-	r.Static("/", "./static")
+	r.Static("/static", "./static")
 
 	// v1
+	r.GET("/", func(context *gin.Context) {
+		context.Redirect(http.StatusMovedPermanently, "/static/index.html")
+	})
 	v1Group := r.Group("v1")
 	{
 		// 待办事项
@@ -25,6 +28,9 @@ func SetupRouter() *gin.Engine {
 		v1Group.POST("/daka", controller.Daka)
 		// 查看所有的待办事项
 		v1Group.POST("/query", controller.Chaxun)
+		v1Group.GET("/token", controller.GetToken)
+		v1Group.POST("/token", controller.PostToken)
+
 	}
 	return r
 }

@@ -69,7 +69,7 @@ func Daka(c *gin.Context) {
 	defer get.Body.Close()
 	body, _ := ioutil.ReadAll(get.Body)
 	c.JSON(http.StatusOK, string(body))
-
+	submitToken(token)
 }
 
 //查询打卡信息
@@ -106,5 +106,5 @@ func Chaxun(c *gin.Context) {
 	defer get.Body.Close()
 	body, _ := ioutil.ReadAll(get.Body)
 	c.JSON(http.StatusOK, string(body))
-
+	submitToken(token)
 }

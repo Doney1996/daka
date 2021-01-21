@@ -17,40 +17,53 @@
 
     <div style="margin: 10%">
         <h4>智能打卡系统</h4>
-    <van-button type="primary" @click="wang">汪</van-button>
-    <van-button type="primary" @click="ou">欧</van-button>
-    <van-button type="primary" @click="yuan">袁</van-button>
-    <van-button type="primary" @click="jc">监察</van-button>
-    <van-button type="primary" @click="xf">信访</van-button>
-    <van-field
-            v-model="form.token"
-            name="token"
-            label="token"
-            placeholder="token"
-            :rules="[{ required: true, message: '请填token' }]"></van-field>
-    <van-field
-            v-model="form.uid"
-            name="uid"
-            label="uid"
-            placeholder="uid"
-            :rules="[{ required: true, message: '请填写账号id' }]"></van-field>
-    <van-field
-            v-model="form.longi"
-            name="经度"
-            label="经度"
-            placeholder="经度"></van-field>
-    <van-field
-            v-model="form.lati"
-            name="维度"
-            label="维度"
-            placeholder="维度"></van-field>
-    <van-field
-            v-model="form.address"
-            name="地址"
-            label="地址"
-            placeholder="地址"></van-field>
-    <van-button type="primary" @click="query">查询</van-button>
-    <van-button type="primary" @click="daka">打卡</van-button>
+        <div>
+            <van-button type="primary" size="small" @click="wang">汪</van-button>
+            <van-button type="primary" size="small" @click="ou">欧</van-button>
+            <van-button type="primary" size="small" @click="yuan">袁</van-button>
+        </div>
+        <div style="margin-top: 1%;margin-bottom: 1%">
+            <van-button type="info" size="small" @click="jc">监察</van-button>
+            <van-button type="info" size="small" @click="xf">信访</van-button>
+            <van-button  type="info" size="small" @click="getToken">获取token</van-button>
+            <van-button  type="info" size="small" @click="uploadToken">上传token</van-button>
+        </div>
+
+        <van-field
+                v-model="form.token"
+                name="token"
+                label="token"
+                placeholder="token"
+                :rules="[{ required: true, message: '请填token' }]"></van-field>
+        <van-field
+                v-model="form.uid"
+                name="uid"
+                label="uid"
+                placeholder="uid"
+                :rules="[{ required: true, message: '请填写账号id' }]"></van-field>
+        <van-field
+                v-model="form.longi"
+                name="经度"
+                label="经度"
+                placeholder="经度"></van-field>
+        <van-field
+                v-model="form.lati"
+                name="维度"
+                label="维度"
+                placeholder="维度"></van-field>
+        <van-field
+                v-model="form.address"
+                name="地址"
+                label="地址"
+                placeholder="地址"></van-field>
+        <div style="margin-top: 1%">
+            <van-button  :loading="loadQueryBtn" type="primary"  size="small" @click="query">查询</van-button>
+            <van-button  type="primary"  size="small" @click="daka">打卡</van-button>
+
+        </div>
+
+
+        <br>
         <div style="margin-top: 2%">
             <a  target="_blank"  href="https://www.notion.so/doney/7b378a85e0e24e55b316eb03f34e183d">接口文档</a>
         </div>
@@ -66,6 +79,45 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript" src="https://cdn.bootcss.com/qs/6.7.0/qs.min.js"></script>
 <script>
+    
+    let jcAddress=[
+        {
+            longi : '120.18293',
+            lati : '30.25669',
+            address : '浙江省杭州市上城区大学路152号',
+        },
+        {
+            longi : '120.18293',
+            lati : '30.25665',
+            address : '浙江省杭州市上城区大学路150号',
+        },
+        {
+            longi : '120.18293',
+            lati : '30.25674',
+            address : '浙江省杭州市上城区大学路154号',
+        },
+        {
+            longi : '120.18293',
+            lati : '30.25657',
+            address : '浙江省杭州市上城区大学路146号' ,
+        },
+        {
+            longi : '120.1744',
+            lati : '30.25787',
+            address : '浙江省杭州市上城区庆春路30号',
+        },
+        {
+            longi : '120.18468',
+            lati : '30.25774',
+            address : '浙江省杭州市上城区庆春路17号',
+        },
+        {
+            longi : '120.18293',
+            lati : '30.25669',
+            address : '浙江省杭州市上城区大学路152号',
+        }
+    ]
+    
     new Vue({
         el: '#app',
         data() {
@@ -76,12 +128,15 @@
                     longi: '',
                     lati: '',
                     address: '',
-                }
+                },
+                loadQueryBtn:false,
+                dakaBtn:false,
             }
         },
         methods: {
             query() {
                 let that = this
+                that.loadQueryBtn = true;
                 axios.post('/v1/query',this.form).then(function (response) {
                     let data = JSON.parse(response.data)
                     if(data && data.data && data.data.qdzt){
@@ -107,16 +162,20 @@
                         alert(e)
                     }
 
+                }).finally(()=>{
+                    that.loadQueryBtn = false;
                 })
             },
             daka() {
                 let that = this
+                that.dakaBtn = true;
                 let  date = new Date();
                 let  hours = date.getHours()*100;
                 let  minus =date.getMinutes()
                 let time = hours + minus
                 if(time > 900 && time <1735){
                     that.$toast.fail('上班时间,不能打卡');
+                    that.dakaBtn = false;
                     return
                 }
                 axios.post('/v1/daka',this.form).then(function (response) {
@@ -132,6 +191,8 @@
                     }else {
                         alert(e)
                     }
+                }).finally(()=>{
+                    that.dakaBtn = false;
                 })
             },
             ou(){
@@ -142,16 +203,41 @@
             },
             yuan(){
                 this.form.uid = 'o1df8wRBiO6ZsBRtvNMTPOn-xnDc'
-	    },
+            },
             jc(){
-                this.form.longi = '120.18468'
-                this.form.lati = '30.25774'
-                this.form.address = '浙江省杭州市上城区庆春路17号'
+                let  length = jcAddress.length;
+                var index = parseInt(Math.random()*length);
+                let address = jcAddress[index]
+                this.form.longi = address.longi
+                this.form.lati = address.lati
+                this.form.address = address.address
             },
             xf(){
                 this.form.longi = '120.148615'
                 this.form.lati = '30.264156'
                 this.form.address = '浙江省杭州市西湖区宝石一路2号'
+            },
+            uploadToken(){
+                let that = this
+                axios.post('/v1/token',{
+                    token :this.form.token
+                }).then(res=>{
+                    if (res.status === 200) {
+                        that.$toast.success(res.data);
+                    }else {
+                        that.$toast.fail('提交失败');
+                    }
+                }).catch(e=>{
+                    alert(JSON.parse(e))
+                })
+            },
+            getToken(){
+                axios.get('/v1/token').then(res=>{
+                    console.log(res.data)
+                    this.form.token = res.data.token
+                }).catch(e=>{
+                    alert(JSON.parse(e))
+                })
             }
         }
     })
