@@ -21,6 +21,7 @@
             <van-button type="primary" size="small" @click="wang">汪</van-button>
             <van-button type="primary" size="small" @click="ou">欧</van-button>
             <van-button type="primary" size="small" @click="yuan">袁</van-button>
+            <van-button type="primary" size="small" @click="li">李</van-button>
         </div>
         <div style="margin-top: 1%;margin-bottom: 1%">
             <van-button type="info" size="small" @click="jc">监察</van-button>
@@ -106,16 +107,6 @@
             longi : '120.18293',
             lati : '30.25657',
             address : '浙江省杭州市上城区大学路146号' ,
-        },
-        {
-            longi : '120.1744',
-            lati : '30.25787',
-            address : '浙江省杭州市上城区庆春路30号',
-        },
-        {
-            longi : '120.18468',
-            lati : '30.25774',
-            address : '浙江省杭州市上城区庆春路17号',
         },
         {
             longi : '120.18293',
@@ -213,7 +204,10 @@
             ou(){
                 this.form.uid = 'o1df8wULVEui8iH6iGQUSxLqEYGM'
             },
-            wang(){
+            li() {
+                this.form.uid = 'o1df8wdKnxgLqSlyRFUUuqCgd6-4'
+            },
+            wang() {
                 this.form.uid = 'o1df8wbs0jO5O0EVk8IRD47IDZLg'
             },
             yuan(){
