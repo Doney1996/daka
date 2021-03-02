@@ -18,10 +18,8 @@
     <div style="margin: 10%">
         <h4>智能打卡系统</h4>
         <div>
-            <van-button type="primary" size="small" @click="wang">汪</van-button>
-            <van-button type="primary" size="small" @click="ou">欧</van-button>
-            <van-button type="primary" size="small" @click="yuan">袁</van-button>
-            <van-button type="primary" size="small" @click="li">李</van-button>
+            <van-button type="primary" size="small" @click="actionShow = true">选择用户</van-button>
+            <van-action-sheet v-model="actionShow" :actions="actions" @select="onSelect" ></van-action-sheet>
         </div>
         <div style="margin-top: 1%;margin-bottom: 1%">
             <van-button type="info" size="small" @click="jc">监察</van-button>
@@ -119,6 +117,13 @@
         el: '#app',
         data() {
             return {
+                actionShow:false,
+                actions: [
+                    { name: '李海洋',value:'o1df8wdKnxgLqSlyRFUUuqCgd6-4' },
+                    { name: '郭志瑶',value:'o1df8wTDl3_nHEVqHImgFGhkn92c' },
+                    { name: '袁利强',value:'o1df8wRBiO6ZsBRtvNMTPOn-xnDc' },
+                    { name: '欧东林',value:'o1df8wULVEui8iH6iGQUSxLqEYGM' },
+                    { name: '汪亚平',value:'o1df8wbs0jO5O0EVk8IRD47IDZLg' }],
                 form: {
                     token: '',
                     uid: '',
@@ -140,6 +145,10 @@
             }
         },
         methods: {
+            onSelect(item){
+                this.form.uid = item.value
+                this.actionShow = false
+            },
             query() {
                 let that = this
                 that.loadQueryBtn = true;
@@ -200,18 +209,6 @@
                 }).finally(()=>{
                     that.dakaBtn = false;
                 })
-            },
-            ou(){
-                this.form.uid = 'o1df8wULVEui8iH6iGQUSxLqEYGM'
-            },
-            li() {
-                this.form.uid = 'o1df8wdKnxgLqSlyRFUUuqCgd6-4'
-            },
-            wang() {
-                this.form.uid = 'o1df8wbs0jO5O0EVk8IRD47IDZLg'
-            },
-            yuan(){
-                this.form.uid = 'o1df8wRBiO6ZsBRtvNMTPOn-xnDc'
             },
             jc(){
                 let  length = jcAddress.length;
